@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CPU Scheduling Algorithm</title>
+    </head>
+    <body>
+        <main>
+            <select id="algorithm" onchange="
+                selectSchedulingAlgorithm()
+            ">
+                <option value="fcfs">First Come First Serve</option>
+                <option value="sjf">Shortest Job First</option>
+                <option value="srtf">Shortest Remaining Time First</option>
+                <option value="rr">Round Robin</option>
+                <option value="psnp">Priority Scheduling (Non-Preemptive)</option>
+                <option value="psp">Priority Scheduling (Preemptive)</option>
+                <option value="psrr">Priority Scheduling with Round Robin</option>
+            </select>
+
+            <button id="add-process" onclick="
+                addProcess()
+            ">Add Process</button>
+
+            <button id="reset-values" onclick="
+                resetValues()
+            ">Reset Values</button>
+
+            <button id="run-algorithm" onclick="
+                runSchedulingAlgorithm()
+            ">Run Algorithm</button>
+
+            <div id="time-quantum-container" style="display: none">
+                <label>Time Quantum:</label>
+                <input type="number" id="quantum-input" placeholder="0" oninput="
+                    saveQuantum()
+                ">
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Process ID</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th id="priority-header">Priority</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="input-fields-js"></tbody>
+            </table>
+        </main>
+
+        <script src="cpu-scheduling-algorithm.js"></script>
+    </body>
+</html>
