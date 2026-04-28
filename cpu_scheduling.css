@@ -1,31 +1,31 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Design tokens ──────────────────────────────────────────────────────
-       All colors, radii, and shadows are defined here as CSS variables so
-       the dark-mode override below only needs to redefine the values that
-       actually change between themes (colors), not structural values like
-       radii or shadows which stay the same in both modes.             */
+    /* ------------------------------ Design tokens ------------------------------ 
+       All the colors, radii, and shadows are defined here as CSS variables so the 
+       dark-mode override below only needs to redefine the values that actually 
+       change between themes (colors), not structural values like radii or shadows 
+       which stay the same in both modes. */
     :root {
-      --bg:          #f5f6fa;  /* Page background                          */
-      --surface:     #ffffff;  /* Card background                          */
-      --surface2:    #f0f1f5;  /* Inset elements: inputs, stat cards       */
-      --border:      #dde0e8;  /* Primary borders                          */
-      --border2:     #e8eaf0;  /* Subtle borders (table row dividers)      */
-      --text:        #1a1d27;  /* Primary text                             */
-      --text2:       #6b7280;  /* Secondary / muted text                   */
-      --accent:      #4f6ef7;  /* Interactive blue: buttons, focus rings   */
-      --accent-h:    #3a57e8;  /* Accent hover state                       */
-      --danger:      #ef4444;  /* Validation errors, delete button         */
-      --danger-h:    #dc2626;  /* Danger hover state                       */
-      --success:     #10b981;  /* Reserved for future use                  */
-      --radius:      10px;     /* Card corner radius                       */
-      --radius-sm:   6px;      /* Input / button corner radius             */
-      --shadow:      0 1px 4px rgba(0,0,0,.08);   /* Card default shadow  */
-      --shadow-md:   0 4px 16px rgba(0,0,0,.10);  /* Elevated shadow      */
+      --bg:          #f5f6fa;   /* Page background                        */
+      --surface:     #ffffff;   /* Card background                        */
+      --surface2:    #f0f1f5;   /* Inset elements: inputs, stat cards     */
+      --border:      #dde0e8;   /* Primary borders                        */
+      --border2:     #e8eaf0;   /* Subtle borders (table row dividers)    */
+      --text:        #1a1d27;   /* Primary text                           */
+      --text2:       #6b7280;   /* Secondary / muted text                 */
+      --accent:      #4f6ef7;   /* Interactive blue: buttons, focus rings */
+      --accent-h:    #3a57e8;   /* Accent hover state                     */
+      --danger:      #ef4444;   /* Validation errors, delete button       */
+      --danger-h:    #dc2626;   /* Danger hover state                     */
+      --success:     #10b981;   /* Reserved for future use                */
+      --radius:      10px;        /* Card corner radius                     */
+      --radius-sm:   6px;         /* Input / button corner radius           */
+      --shadow:      0 1px 4px rgba(0,0,0,.08);    /* Card default shadow */
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);   /* Elevated shadow     */
     }
 
-    /* Dark mode: only color tokens are overridden; structural tokens
-       (radius, shadow) are inherited unchanged from :root above.    */
+    /* Dark mode: only color tokens are overridden; structural tokens 
+       (radius, shadow) are inherited unchanged from :root above. */
     @media (prefers-color-scheme: dark) {
       :root {
         --bg:       #0f1117;
@@ -46,7 +46,7 @@
       padding: 24px 16px 48px;
     }
 
-    /* ── Layout ─────────────────────────────────────────────────────────── */
+    /* ------------------------------ Layout ------------------------------ */
     .page-wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
 
     h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
@@ -69,7 +69,7 @@
       margin-bottom: 14px;
     }
 
-    /* ── Config row (algo + quantum) ────────────────────────────────────── */
+    /* ------------------------------ Configuration Row (algorithm + quantum) ------------------------------ */
     .config-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
 
     label.field-label { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
@@ -85,19 +85,20 @@
       transition: border-color .15s;
     }
     select:focus, input[type="number"]:focus { border-color: var(--accent); }
-    /* appearance:none removes the browser's native dropdown arrow so the
+
+    /* appearance:none removes the browser's native dropdown arrow so the 
        inline SVG background-image can serve as a consistent custom arrow. */
     select { padding-right: 28px; appearance: none;
              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E");
              background-repeat: no-repeat; background-position: right 10px center; }
 
-    /* Hidden by default; toggled to display:flex by Scheduler.onAlgorithmChange()
-       when a quantum-based algorithm is selected (RR or Priority RR). */
+    /* Hidden by default; toggled to display:flex by Scheduler.onAlgorithmChange() 
+       when a quantum-based algortihm is selected (RR or Priority RR). */
     #quantum-wrap { display: none; align-items: center; gap: 8px; }
     #rr-quantum   { width: 60px; }
 
-    /* ── Process table ──────────────────────────────────────────────────── */
-    /* overflow-x:auto lets the table scroll horizontally on narrow screens
+    /* ------------------------------ Process table ------------------------------ */
+    /* overflow-x:auto lets the table scroll horizontally on narrow screens 
        instead of breaking the page layout. */
     .proc-table-wrap { overflow-x: auto; }
 
@@ -116,7 +117,7 @@
     .proc-table td { padding: 7px 10px; border-bottom: 1px solid var(--border2); vertical-align: middle; }
     .proc-table tr:last-child td { border-bottom: none; }
 
-    /* Inputs inside table cells use a transparent border by default so they
+    /* Inputs inside table cells use a transparent border by default so they 
        blend in visually; the border becomes visible on focus or validation error. */
     .proc-table input[type="text"],
     .proc-table input[type="number"] {
@@ -128,7 +129,7 @@
     .proc-table input[type="number"]:focus { border-color: var(--accent); outline: none; }
 
     /* Color dot shown in the first column of each process row.
-       Background and border colors are set inline by ProcessEditor.render()
+       Background and border colors are set inline by ProcessEditor.render() 
        using the process's palette entry. */
     .proc-color-dot {
       width: 10px; height: 10px; border-radius: 50%;
@@ -138,7 +139,7 @@
 
     td.col-name-cell { display: flex; align-items: center; min-width: 80px; }
 
-    /* ── Buttons ────────────────────────────────────────────────────────── */
+    /* ------------------------------ Buttons ------------------------------ */
     .btn {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 7px 14px; border-radius: var(--radius-sm);
@@ -157,7 +158,7 @@
     }
     .btn-ghost:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
 
-    /* btn-danger is the ✕ remove button in each process row. Transparent
+    /* btn-danger is the ✕ remove button in each process row. Transparent 
        background by default so it doesn't draw attention at rest. */
     .btn-danger { background: transparent; color: var(--danger); border-color: transparent; padding: 4px 8px; }
     .btn-danger:hover:not(:disabled) { background: #fee2e2; }
@@ -170,17 +171,18 @@
     }
     .btn-add:hover { background: var(--surface2); }
 
-    /* ── Controls row ───────────────────────────────────────────────────── */
+    /* ------------------------------ Controls row ------------------------------ */
     .controls-row {
       display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
     }
+
     /* margin-left:auto pushes the speed control to the far right of the row. */
     .speed-wrap { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; color: var(--text2); }
     input[type="range"] { accent-color: var(--accent); width: 90px; }
 
     #time-display { font-size: 13px; font-weight: 500; color: var(--text2); min-width: 64px; }
 
-    /* ── Simulation card ────────────────────────────────────────────────── */
+    /* ------------------------------ Simulation card ------------------------------ */
     /* Two-column grid: CPU box occupies the fixed 100px left column;
        the ready queue occupies the flexible right column.
        The Gantt row (third row) spans both columns via grid-column: 1 / -1. */
@@ -201,9 +203,10 @@
       transition: background .2s, border-color .2s, color .2s;
       background: var(--surface2);
     }
+    
     /* !important here overrides the inline styles that Scheduler.renderCPU()
        sets when a process is running. Without it, removing the .idle class
-       would not be enough to clear the process color — the inline styles would
+       would not be enough to clear the process color, the inline styles would
        still win in specificity. */
     #cpu-box.idle { background: var(--surface2) !important; border-color: var(--border) !important; color: var(--text2) !important; }
 
@@ -232,6 +235,7 @@
       transition: transform 0.3s ease, opacity 0.3s ease;
       gap: 2px;
     }
+
     /* Entry animation start state: chip begins offset to the right and invisible.
        JS removes this class on the next two animation frames (double rAF) so the
        transition from this state plays visually as a slide-in from the right. */
@@ -240,7 +244,7 @@
     .chip-rem      { font-size: 10px; opacity: .7; }
     .chip-priority { font-size: 10px; opacity: .8; }
 
-    /* ── Gantt ──────────────────────────────────────────────────────────── */
+    /* ------------------------------ Gantt ------------------------------ */
     /* grid-column: 1 / -1 makes the Gantt row span across both grid columns
        (CPU + Queue) so the chart runs the full width of the simulation card. */
     .gantt-wrap { grid-column: 1 / -1; }
@@ -252,6 +256,7 @@
       border: 1px solid var(--border);
       min-height: 52px;
     }
+
     /* Each .g-block is one process segment in the Gantt chart. width starts at 0
        and grows via JS; transition: width creates the animated fill effect.
        border-right uses var(--bg) as a thin separator between adjacent blocks. */
@@ -269,7 +274,7 @@
     #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; color: var(--text2); }
     .tick        { position: absolute; transform: translateX(-50%); }
 
-    /* ── Stats ──────────────────────────────────────────────────────────── */
+    /* ------------------------------ Stats ------------------------------ */
     .stat-algo-label  { font-size: 13px; font-weight: 500; color: var(--text2); }
     .stat-summary-row { display: flex; flex-wrap: wrap; gap: 10px; }
     .stat-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 16px; }
@@ -279,11 +284,12 @@
     .stat-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .stat-table th { text-align: left; color: var(--text2); font-weight: 400; padding: 4px 10px 8px; }
     .stat-table td { padding: 7px 10px; border-top: 1px solid var(--border2); }
+
     /* proc-badge is the colored process name pill in the stats table.
        bg, border, and text are set inline by Scheduler.renderStats(). */
     .proc-badge { display: inline-block; padding: 2px 8px; border-radius: 5px; border: 0.5px solid; font-size: 12px; font-weight: 500; }
 
-    /* ── Error toast ────────────────────────────────────────────────────── */
+    /* ------------------------------ Error toast ------------------------------ */
     #error-toast {
       display: none; background: #fef2f2; border: 1px solid #fca5a5;
       color: #b91c1c; border-radius: var(--radius-sm);
