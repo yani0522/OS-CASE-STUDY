@@ -134,9 +134,9 @@
     </div><!-- /page-wrap -->
 
     <!-- Script load order matters:
-         1. algorithms.js  — defines `algorithms`, computeGantt, computeStats (no DOM dependency)
-         2. simulation.js  — defines `Scheduler` (depends on algorithms.js)
-         3. process_editor.js — defines `ProcessEditor`, then calls Scheduler.init()
+         1. algorithms.js  - defines `algorithms`, computeGantt, computeStats (no DOM dependency)
+         2. simulation.js  - defines `Scheduler` (depends on algorithms.js)
+         3. process_editor.js - defines `ProcessEditor`, then calls Scheduler.init()
                                 (depends on both files above being ready) -->
     <script src="cpu_scheduling_algorithms.js"></script>
     <script src="cpu_scheduling_simulation.js"></script>

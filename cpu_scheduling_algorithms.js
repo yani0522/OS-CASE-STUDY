@@ -69,7 +69,7 @@ function pushFrame(frames, time, process, remainingBurstTime, queue) {
 // -----------------------------------------------------------------------------
 
 /**
- * fcfsAlgorithm — First Come First Served (non-preemptive)
+ * fcfsAlgorithm - First Come First Served (non-preemptive)
  *
  * Selection rule: among all arrived processes, pick the one that arrived
  * earliest (ties broken arbitrarily by array position after the initial sort).
@@ -96,7 +96,7 @@ function fcfsAlgorithm(processes) {
         const ready = jobs.filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0);
 
         if (!ready.length) {
-            // CPU gap: no process is ready yet — advance one tick in idle.
+            // CPU gap: no process is ready yet - advance one tick in idle.
             pushFrame(frames, time, 'idle', 0, []);
             time++;
             continue;
@@ -105,7 +105,7 @@ function fcfsAlgorithm(processes) {
         // Pick the head of the ready list (earliest arrival due to the initial sort).
         const running = ready[0];
 
-        // Run for the full burst — FCFS never preempts.
+        // Run for the full burst - FCFS never preempts.
         // `i` counts ticks elapsed, so remaining = original - i.
         for (let i = 0; i < running.remainingBurstTime; i++) {
             // Live queue snapshot excludes the currently running process.
@@ -123,7 +123,7 @@ function fcfsAlgorithm(processes) {
 }
 
 /**
- * sjfAlgorithm — Shortest Job First (non-preemptive)
+ * sjfAlgorithm - Shortest Job First (non-preemptive)
  *
  * Selection rule: among arrived processes, pick the one with the smallest
  * *original* burstTime. Ties broken by arrival time.
@@ -172,7 +172,7 @@ function sjfAlgorithm(processes) {
 }
 
 /**
- * srtfAlgorithm — Shortest Remaining Time First (preemptive SJF)
+ * srtfAlgorithm - Shortest Remaining Time First (preemptive SJF)
  *
  * Selection rule: each tick, pick the arrived process with the smallest
  * *remaining* burst time. A newly arrived shorter job immediately preempts
@@ -191,7 +191,7 @@ function srtfAlgorithm(processes) {
     let time = 0;
 
     while (jobs.some(j => j.remainingBurstTime > 0)) {
-        // Re-sort every tick by *remaining* burst time — enables preemption.
+        // Re-sort every tick by *remaining* burst time - enables preemption.
         const ready = jobs
             .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0)
             .sort((a, b) => a.remainingBurstTime - b.remainingBurstTime || a.arrivalTime - b.arrivalTime);
@@ -208,7 +208,7 @@ function srtfAlgorithm(processes) {
             .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name)
             .sort((a, b) => a.remainingBurstTime - b.remainingBurstTime || a.arrivalTime - b.arrivalTime);
 
-        // One tick only — the loop will re-evaluate the winner next iteration.
+        // One tick only - the loop will re-evaluate the winner next iteration.
         pushFrame(frames, time, running.name, running.remainingBurstTime, liveQueue);
         running.remainingBurstTime--;
         time++;
@@ -218,7 +218,7 @@ function srtfAlgorithm(processes) {
 }
 
 /**
- * rrAlgorithm — Round Robin
+ * rrAlgorithm - Round Robin
  *
  * Selection rule: processes share the CPU in circular order. Each gets at
  * most `quantum` ticks before being moved to the back of the queue.
@@ -286,10 +286,10 @@ function rrAlgorithm(processes, options = {}) {
         running.remainingBurstTime -= run;
 
         if (running.remainingBurstTime > 0) {
-            // Quantum expired but job isn't done — cycle it to the back.
+            // Quantum expired but job isn't done - cycle it to the back.
             queue.push(running);
         } else {
-            // Job finished — remove from the tracked set so it won't re-enter.
+            // Job finished - remove from the tracked set so it won't re-enter.
             inQueue.delete(running.name);
         }
 
@@ -302,7 +302,7 @@ function rrAlgorithm(processes, options = {}) {
 }
 
 /**
- * pnpAlgorithm — Priority (Non-Preemptive)
+ * pnpAlgorithm - Priority (Non-Preemptive)
  *
  * Selection rule: among arrived processes, pick the one with the lowest
  * priority number (lower number = higher priority). Ties broken by arrival time.
@@ -348,7 +348,7 @@ function pnpAlgorithm(processes) {
 }
 
 /**
- * ppAlgorithm — Priority (Preemptive)
+ * ppAlgorithm - Priority (Preemptive)
  *
  * Selection rule: each tick, pick the arrived process with the highest
  * priority (lowest number). A newly arrived higher-priority job immediately
@@ -367,7 +367,7 @@ function ppAlgorithm(processes) {
     let time = 0;
 
     while (jobs.some(j => j.remainingBurstTime > 0)) {
-        // Re-sort every tick — any new arrival can preempt the current runner.
+        // Re-sort every tick - any new arrival can preempt the current runner.
         const ready = jobs
             .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0)
             .sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
@@ -384,7 +384,7 @@ function ppAlgorithm(processes) {
             .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name)
             .sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
 
-        // Single tick — enables preemption on the very next iteration.
+        // Single tick - enables preemption on the very next iteration.
         pushFrame(frames, time, running.name, running.remainingBurstTime, liveQueue);
         running.remainingBurstTime--;
         time++;
@@ -394,7 +394,7 @@ function ppAlgorithm(processes) {
 }
 
 /**
- * prrAlgorithm — Priority Round Robin
+ * prrAlgorithm - Priority Round Robin
  *
  * A hybrid algorithm: processes are grouped into separate per-priority FIFO
  * queues. The highest-priority non-empty queue is always served first. Within
@@ -402,26 +402,26 @@ function ppAlgorithm(processes) {
  * A higher-priority process arriving mid-quantum preempts the running one.
  *
  * Data structures:
- *   queues    — Object keyed by priority level; each value is a FIFO array.
- *   inQueue   — Set of names currently sitting in any priority queue.
- *   priorityLevels — Sorted (ascending) unique priority values extracted once
+ *   queues         - Object keyed by priority level; each value is a FIFO array.
+ *   inQueue        - Set of names currently sitting in any priority queue.
+ *   priorityLevels - Sorted (ascending) unique priority values extracted once
  *                    from the process list and used for ordered iteration.
  *
  * Inner helpers:
- *   enqueue(time)        — Admits newly arrived processes into their priority queue.
- *   getActiveQueue()     — Returns the non-empty queue with the lowest priority
- *                          number (= highest urgency).
- *   getQueueSnapshot()   — Flattens all queues into one ordered list for the
- *                          frame's queue snapshot, excluding the running process.
+ *   enqueue(time)      - Admits newly arrived processes into their priority queue.
+ *   getActiveQueue()   - Returns the non-empty queue with the lowest priority
+ *                        number (= highest urgency).
+ *   getQueueSnapshot() - Flattens all queues into one ordered list for the
+ *                        frame's queue snapshot, excluding the running process.
  *
  * Preemption logic (inside the per-quantum tick loop):
  *   After each tick, enqueue() is called to admit any new arrivals. If any
  *   process with a *lower* priority number than the running process is now
- *   queued, the loop breaks early — the running process is re-queued at its
+ *   queued, the loop breaks early - the running process is re-queued at its
  *   own priority level and the higher-priority newcomer wins next iteration.
  *
  * @param  {Object[]} processes
- * @param  {Object}   options        - { quantum: number }
+ * @param  {Object}   options   - { quantum: number }
  * @returns {Object[]} frames
  */
 function prrAlgorithm(processes, options = {}) {
@@ -480,7 +480,7 @@ function prrAlgorithm(processes, options = {}) {
         enqueue(time);
 
         if (!getActiveQueue()) {
-            // All queues empty — CPU idle.
+            // All queues empty - CPU idle.
             pushFrame(frames, time, 'idle', 0, []);
             time++;
             enqueue(time);
@@ -512,10 +512,10 @@ function prrAlgorithm(processes, options = {}) {
         running.remainingBurstTime -= ticksRun;
 
         if (running.remainingBurstTime > 0) {
-            // Not done — re-queue at the same priority level (back of that queue).
+            // Not done - re-queue at the same priority level (back of that queue).
             queues[running.priority].push(running);
         } else {
-            // Finished — remove from the tracking set.
+            // Finished - remove from the tracking set.
             inQueue.delete(running.name);
         }
 
@@ -542,48 +542,13 @@ function prrAlgorithm(processes, options = {}) {
  * Keys match the <option value="..."> in cpu_scheduling.html.
  */
 const algorithms = {
-    fcfs: { 
-        label: 'First Come First Served',
-        run: fcfsAlgorithm,
-        needsPriority: false,
-        needsQuantum: false
-    },
-    sjf: {
-        label: 'Shortest Job First',
-        run: sjfAlgorithm,
-        needsPriority: false,
-        needsQuantum: false
-    },
-    srtf: {
-        label: 'Shortest Remaining Time First',
-        run: srtfAlgorithm,
-        needsPriority: false,
-        needsQuantum: false
-    },
-    rr: {
-        label: 'Round Robin',
-        run: rrAlgorithm,
-        needsPriority: false,
-        needsQuantum: true
-    },
-    pnp: {
-        label: 'Priority (Non-Preemptive)',
-        run: pnpAlgorithm,
-        needsPriority: true,
-        needsQuantum: false
-    },
-    pp: {
-        label: 'Priority (Preemptive)',
-        run: ppAlgorithm,
-        needsPriority: true,
-        needsQuantum: false
-    },
-    prr: {
-        label: 'Priority Round Robin',
-        run: prrAlgorithm,
-        needsPriority: true,
-        needsQuantum: true
-    }
+    fcfs: { label: 'First Come First Served',       run: fcfsAlgorithm, needsPriority: false, needsQuantum: false },
+    sjf:  { label: 'Shortest Job First',            run: sjfAlgorithm,  needsPriority: false, needsQuantum: false },
+    srtf: { label: 'Shortest Remaining Time First', run: srtfAlgorithm, needsPriority: false, needsQuantum: false },
+    rr:   { label: 'Round Robin',                   run: rrAlgorithm,   needsPriority: false, needsQuantum: true  },
+    pnp:  { label: 'Priority (Non-Preemptive)',     run: pnpAlgorithm,  needsPriority: true,  needsQuantum: false },
+    pp:   { label: 'Priority (Preemptive)',         run: ppAlgorithm,   needsPriority: true,  needsQuantum: false },
+    prr:  { label: 'Priority Round Robin',          run: prrAlgorithm,  needsPriority: true,  needsQuantum: true  }
 };
 
 
@@ -598,7 +563,7 @@ const algorithms = {
  * where consecutive frames belonging to the same process are merged into one
  * block with a start and end time.
  *
- * Example: frames for P1 at t=0,1,2 → { name:'P1', start:0, end:3 }
+ * Example: frames for P1 at t=0,1,2 -> { name:'P1', start:0, end:3 }
  *
  * This is used by the simulation engine to pre-build the Gantt bar DOM
  * elements before the animation starts, with their final widths calculated
@@ -613,11 +578,11 @@ function computeGantt(frames) {
 
     for (const frame of frames) {
         if (!current || current.name !== frame.process) {
-            // Process changed (or first frame) — push the previous block and start a new one.
+            // Process changed (or first frame) - push the previous block and start a new one.
             if (current) blocks.push(current);
             current = { name: frame.process, start: frame.time, end: frame.time + 1 };
         } else {
-            // Same process as the previous frame — extend the current block by one tick.
+            // Same process as the previous frame - extend the current block by one tick.
             current.end = frame.time + 1;
         }
     }
@@ -645,7 +610,7 @@ function computeGantt(frames) {
 function computeStats(processes, frames) {
     return processes.map(p => {
         const processFrames = frames.filter(f => f.process === p.name);
-        if (!processFrames.length) return null; // Process never ran — skip.
+        if (!processFrames.length) return null; // Process never ran - skip.
 
         // Last frame's time + 1 gives the moment the process fully completes.
         const completionTime = processFrames[processFrames.length - 1].time + 1;

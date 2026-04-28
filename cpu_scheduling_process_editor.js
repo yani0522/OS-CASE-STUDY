@@ -6,7 +6,7 @@
 //   2. Rendering that list into the process table in the DOM.
 //   3. Handling add / remove row actions.
 //   4. Keeping `rows` in sync as the user edits individual input fields.
-//   5. Validating all inputs — both live (per-field, on every keystroke) and
+//   5. Validating all inputs - both live (per-field, on every keystroke) and
 //      on-submit (full pass before a simulation run).
 //   6. Exposing `getProcesses()` so the Scheduler can read the final values
 //      right before it runs an algorithm.
@@ -34,10 +34,10 @@ const ProcessEditor = (() => {
      * table row and holds the values the user has typed in (or the defaults).
      *
      * Fields:
-     *   name        {string} — Display name shown in the table and Gantt chart.
-     *   arrivalTime {number} — Clock tick at which the process enters the system.
-     *   burstTime   {number} — Total CPU time the process needs to complete.
-     *   priority    {number} — Lower number = higher priority (only used by
+     *   name        {string} - Display name shown in the table and Gantt chart.
+     *   arrivalTime {number} - Clock tick at which the process enters the system.
+     *   burstTime   {number} - Total CPU time the process needs to complete.
+     *   priority    {number} - Lower number = higher priority (only used by
      *                          priority-based algorithms; ignored otherwise).
      *
      * These defaults give a meaningful first simulation without any user input.
@@ -68,7 +68,7 @@ const ProcessEditor = (() => {
      *
      * Fully rebuilds the process table body from the current `rows` array.
      * Called after any structural change (add, remove, color repaint, or
-     * priority column toggle). Input-level edits don't call render() —
+     * priority column toggle). Input-level edits don't call render() -
      * they update `rows` directly via `setField()` to avoid losing focus.
      *
      * For each row it:
@@ -101,8 +101,8 @@ const ProcessEditor = (() => {
 
             // Build the row's inner HTML.
             // oninput fires on every keystroke:
-            //   setField   — persists the new value into `rows[i]`
-            //   validateField — immediately updates the input border color
+            //   setField   - persists the new value into `rows[i]`
+            //   validateField - immediately updates the input border color
             trow.innerHTML = `
                 <td style="color:var(--text2);font-size:12px">
                 <span class="proc-color-dot" style="background:${color.bg};border-color:${color.border}"></span>
@@ -196,7 +196,7 @@ const ProcessEditor = (() => {
      * removeRow(index)
      *
      * Removes the row at the given index from `rows` and re-renders the table.
-     * Enforces a minimum of 3 rows — the remove button is also disabled in the
+     * Enforces a minimum of 3 rows - the remove button is also disabled in the
      * DOM when this limit is reached, so this is a safety guard for programmatic
      * calls.
      *
@@ -228,15 +228,15 @@ const ProcessEditor = (() => {
      *
      * Each numeric field clamps and floors the incoming value to stay within
      * valid bounds, guarding against NaN (empty box mid-edit) without
-     * triggering a validation error — the visual error is handled separately
+     * triggering a validation error - the visual error is handled separately
      * by `validateField()`.
      *
      * Field mapping:
-     *   'arrival'  → rows[index].arrivalTime  (min 0, integer)
-     *   'burst'    → rows[index].burstTime    (min 1, integer)
-     *   'priority' → rows[index].priority     (min 1, integer)
-     *   'name'     → rows[index].name         (raw string, no clamping)
-     *   anything else → stored as-is (future extensibility)
+     *   'arrival'  -> rows[index].arrivalTime  (min 0, integer)
+     *   'burst'    -> rows[index].burstTime    (min 1, integer)
+     *   'priority' -> rows[index].priority     (min 1, integer)
+     *   'name'     -> rows[index].name         (raw string, no clamping)
+     *   anything else -> stored as-is (future extensibility)
      *
      * @param {number} index - Row index.
      * @param {string} field - One of 'arrival', 'burst', 'priority', 'name'.
@@ -265,15 +265,15 @@ const ProcessEditor = (() => {
      * alongside `setField`.
      *
      * Validation rules per field:
-     *   'name'    — must not be blank.
-     *   'arrival' — must be a finite whole number ≥ 0.
-     *   'burst'   — must be a finite whole number ≥ 1.
-     *   'priority'— must be a finite whole number ≥ 1.
+     *   'name'     - must not be blank.
+     *   'arrival'  - must be a finite whole number ≥ 0.
+     *   'burst'    - must be a finite whole number ≥ 1.
+     *   'priority' - must be a finite whole number ≥ 1.
      *
      * If the field becomes valid, the error toast shown by the Scheduler is
      * also cleared (in case the user fixed the issue that caused a failed run).
      *
-     * Note: this only sets/clears the red border — it does NOT block the user
+     * Note: this only sets/clears the red border - it does NOT block the user
      * from continuing to type. The full blocking validation happens in
      * `validate()` when the Run button is pressed.
      *
@@ -321,7 +321,7 @@ const ProcessEditor = (() => {
      * Name column update to match the new palette.
      *
      * A full render is used here (rather than just patching the dots) because
-     * it's simpler and the table is small — the cost is negligible.
+     * it's simpler and the table is small - the cost is negligible.
      */
     function repaintColors() {
         render();
@@ -353,10 +353,10 @@ const ProcessEditor = (() => {
      * that may not have synced to `rows` yet (e.g., rapid typing).
      *
      * Fallback behavior:
-     *   - Name: empty string → auto-name "P{i+1}".
-     *   - Arrival: invalid/missing → 0.
-     *   - Burst: invalid/missing → 1.
-     *   - Priority: missing input element → 1 (for non-priority algorithms).
+     *   - Name: empty string -> auto-name "P{i+1}".
+     *   - Arrival: invalid/missing -> 0.
+     *   - Burst: invalid/missing -> 1.
+     *   - Priority: missing input element -> 1 (for non-priority algorithms).
      *
      * @returns {Object[]} Array of { name, arrivalTime, burstTime, priority }.
      */
@@ -470,14 +470,14 @@ const ProcessEditor = (() => {
      * Public API returned to the `ProcessEditor` variable.
      * Only these methods are accessible outside this module.
      *
-     *   addRow()                 — Append a new process row.
-     *   removeRow(index)         — Remove a row by index.
-     *   setField(i, field, val)  — Update one field in `rows` (called by oninput).
-     *   validateField(input, f)  — Live per-input border feedback (called by oninput).
-     *   setPriorityVisible(bool) — Show/hide the Priority column.
-     *   getProcesses()           — Return final process array for the Scheduler.
-     *   validate()               — Full blocking validation; returns error or null.
-     *   repaintColors()          — Re-render the table after a color-scheme change.
+     *   addRow()                 - Append a new process row.
+     *   removeRow(index)         - Remove a row by index.
+     *   setField(i, field, val)  - Update one field in `rows` (called by oninput).
+     *   validateField(input, f)  - Live per-input border feedback (called by oninput).
+     *   setPriorityVisible(bool) - Show/hide the Priority column.
+     *   getProcesses()           - Return final process array for the Scheduler.
+     *   validate()               - Full blocking validation; returns error or null.
+     *   repaintColors()          - Re-render the table after a color-scheme change.
      */
     return { addRow, removeRow, setField, validateField, setPriorityVisible, getProcesses, validate, repaintColors };
 })();

@@ -5,10 +5,10 @@
 //   1. Defining the color palettes (light + dark) used consistently across
 //      every UI element that represents a process (table dots, CPU box, queue
 //      chips, Gantt bars, stats badges).
-//   2. Providing `getColorPalette(processIndex)` — the single source of truth
-//      for which color a process gets — and listening for OS theme changes so
+//   2. Providing `getColorPalette(processIndex)` - the single source of truth
+//      for which color a process gets - and listening for OS theme changes so
 //      all colored elements repaint automatically.
-//   3. The `Scheduler` IIFE — the central animation engine that:
+//   3. The `Scheduler` IIFE - the central animation engine that:
 //        a. Validates inputs and calls the selected algorithm to produce frames.
 //        b. Steps through frames tick-by-tick using setTimeout, with pause,
 //           resume, and manual step-forward controls.
@@ -33,9 +33,9 @@
  * lightColorPalette / darkColorPalette
  *
  * Each palette is an array of 7 color tokens. Each token has three roles:
- *   bg     — fill color for the process chip / bar background.
- *   border — stroke color for chip borders and the CPU box border.
- *   text   — foreground color for labels inside chips and bars.
+ *   bg     - fill color for the process chip / bar background.
+ *   border - stroke color for chip borders and the CPU box border.
+ *   text   - foreground color for labels inside chips and bars.
  *
  * Light and dark palettes share the same border colors but swap the bg/text
  * values so that backgrounds are light-on-dark in dark mode and dark-on-light
@@ -43,7 +43,7 @@
  *
  * The palettes are intentionally aligned: index 0 in both arrays always
  * represents the same "blue" process, so colors stay consistent when the
- * theme changes — only the shade flips.
+ * theme changes - only the shade flips.
  *
  * 7 colors covers most typical process sets. If more than 7 processes exist,
  * `getColorPalette` wraps around with modulo so colors repeat rather than
@@ -75,8 +75,8 @@ const darkColorPalette = [
  * Returns the color token for a given process index, automatically selecting
  * the light or dark palette based on the current OS color scheme.
  *
- * Called by every rendering function that needs to color a process — CPU box,
- * queue chips, Gantt bars, table dots, and stats badges — so all elements
+ * Called by every rendering function that needs to color a process - CPU box,
+ * queue chips, Gantt bars, table dots, and stats badges - so all elements
  * always use the exact same color for the same process.
  *
  * The modulo (`%`) ensures that process indices beyond 6 wrap back to index 0
@@ -101,7 +101,7 @@ function getColorPalette(processIndex) {
  * new simulation run.
  *
  * Defensive `typeof` checks guard against the unlikely case where one module
- * failed to load — repaintColors on the other can still proceed safely.
+ * failed to load - repaintColors on the other can still proceed safely.
  */
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
     if (typeof ProcessEditor !== 'undefined' && ProcessEditor.repaintColors) {
@@ -132,42 +132,42 @@ const Scheduler = (() => {
     // -------------------------------------------------------------------------
 
     /**
-     * processes     — The process list captured at the moment Run is pressed.
-     *                 Held here (not just in ProcessEditor) so rendering
-     *                 functions can look up colors by process name during and
-     *                 after the simulation.
+     * processes   - The process list captured at the moment Run is pressed.
+     *               Held here (not just in ProcessEditor) so rendering
+     *               functions can look up colors by process name during and
+     *               after the simulation.
      *
-     * editor        — Reference to the ProcessEditor module, set by `init()`.
-     *                 null if Scheduler is used without a live editor (e.g., tests).
+     * editor      - Reference to the ProcessEditor module, set by `init()`.
+     *               null if Scheduler is used without a live editor (e.g., tests).
      *
-     * frames        — The full tick-by-tick simulation log produced by the
-     *                 selected algorithm. Each entry is one clock-tick snapshot.
+     * frames      - The full tick-by-tick simulation log produced by the
+     *               elected algorithm. Each entry is one clock-tick snapshot.
      *
-     * ganttBlocks   — Compressed list of Gantt bar segments derived from frames
-     *                 by computeGantt(). Used to build and animate the Gantt chart.
+     * ganttBlocks - Compressed list of Gantt bar segments derived from frames
+     *               by computeGantt(). Used to build and animate the Gantt chart.
      *
-     * frameIndex    — Index of the next frame to apply. Increments after each
-     *                 tick; when it reaches frames.length the simulation ends.
+     * frameIndex  - Index of the next frame to apply. Increments after each
+     *               tick; when it reaches frames.length the simulation ends.
      *
-     * timer         — The setTimeout handle for the current pending tick.
-     *                 Stored so it can be cancelled on pause or reset.
+     * timer       - The setTimeout handle for the current pending tick.
+     *               Stored so it can be cancelled on pause or reset.
      *
-     * isRunning     — True from the moment Run is pressed until finish() is
-     *                 called. Controls whether pause/step/reset are meaningful.
+     * isRunning   - True from the moment Run is pressed until finish() is
+     *               called. Controls whether pause/step/reset are meaningful.
      *
-     * isPaused      — True while the simulation is suspended mid-run.
-     *                 scheduleNextFrame() is a no-op while this is true.
+     * isPaused    - True while the simulation is suspended mid-run.
+     *               scheduleNextFrame() is a no-op while this is true.
      *
-     * speedMs       — Milliseconds between frames, derived from the speed
-     *                 slider. Calculated as 600 / sliderValue so that slider
-     *                 max (10) = 60 ms (fast) and slider min (1) = 600 ms (slow).
+     * speedMs     - Milliseconds between frames, derived from the speed
+     *               slider. Calculated as 600 / sliderValue so that slider
+     *               max (10) = 60 ms (fast) and slider min (1) = 600 ms (slow).
      *
-     * previousQueueNames — Names of processes that were in the ready queue
+     * previousQueueNames - Names of processes that were in the ready queue
      *                      on the previous frame. Used by renderQueue() to
      *                      determine which chips to add, update, or remove
      *                      without rebuilding the entire queue DOM from scratch.
      *
-     * currentQuantum — The time quantum value currently entered in the quantum
+     * currentQuantum - The time quantum value currently entered in the quantum
      *                  input. Updated live as the user types; read when Run is
      *                  pressed to pass to RR / PRR algorithms.
      */
@@ -198,7 +198,7 @@ const Scheduler = (() => {
 
     /**
      * hideElement(id)
-     * Sets display:none on an element by id. Null-safe — does nothing if the
+     * Sets display:none on an element by id. Null-safe - does nothing if the
      * element doesn't exist (guards against typos or optional DOM elements).
      */
     function hideElement(id) {
@@ -284,7 +284,7 @@ const Scheduler = (() => {
      * key string and the algorithm object from the `algorithms` registry
      * (defined in cpu_scheduling_algorithms.js).
      *
-     * Throws if the key is unrecognized — this would indicate a mismatch
+     * Throws if the key is unrecognized - this would indicate a mismatch
      * between the HTML <option> values and the registry, which is a developer
      * error rather than a user error.
      *
@@ -334,7 +334,7 @@ const Scheduler = (() => {
      *
      * Rules: non-empty, a whole number, at least 1.
      *
-     * Note: this only validates — it does not update `currentQuantum`.
+     * Note: this only validates - it does not update `currentQuantum`.
      * `currentQuantum` is updated inside the `input` event listener attached
      * in `onAlgorithmChange()`, but only when the value is already valid, so
      * the field can be mid-edit without corrupting the stored quantum.
@@ -548,7 +548,7 @@ const Scheduler = (() => {
      * advance), cancels any pending timer, applies the next frame, then
      * increments the index ready for the next manual step.
      *
-     * If the simulation wasn't paused before, this also pauses it — so
+     * If the simulation wasn't paused before, this also pauses it - so
      * clicking Step mid-run suspends auto-play and advances by one tick.
      */
     function stepForward() {
@@ -596,9 +596,9 @@ const Scheduler = (() => {
      * between frames. The inverse relationship (600 / value) means a higher
      * slider value = smaller delay = faster animation.
      *
-     * Speed 1  → 600 ms per tick (slow, easy to follow)
-     * Speed 5  → 120 ms per tick (default)
-     * Speed 10 →  60 ms per tick (fast)
+     * Speed 1  -> 600 ms per tick (slow, easy to follow)
+     * Speed 5  -> 120 ms per tick (default)
+     * Speed 10 ->  60 ms per tick (fast)
      *
      * @param {number|string} value - Slider value from the HTML range input.
      */
@@ -614,7 +614,7 @@ const Scheduler = (() => {
     /**
      * scheduleNextFrame()
      *
-     * The core animation loop — called recursively via setTimeout to advance
+     * The core animation loop - called recursively via setTimeout to advance
      * one frame per tick at the current speed.
      *
      * Flow:
@@ -644,11 +644,11 @@ const Scheduler = (() => {
      *
      * Applies one frame of the simulation to the UI. Handles two cases:
      *
-     * Case 1 — Normal frame (index < frames.length):
+     * Case 1 - Normal frame (index < frames.length):
      *   Updates the clock display, CPU box, ready queue, Gantt bars, and tick
      *   labels to reflect the state at this tick.
      *
-     * Case 2 — Past-the-end (index >= frames.length):
+     * Case 2 - Past-the-end (index >= frames.length):
      *   The simulation has finished. This branch:
      *     - Sets the clock to the final completion time (last frame's time + 1).
      *     - Forces all Gantt bars to their full width (in case any are still
@@ -662,7 +662,7 @@ const Scheduler = (() => {
     function applyFrame(index) {
         
         if (index >= frames.length) {
-            // Simulation complete — snap everything to its final state.
+            // Simulation complete - snap everything to its final state.
             const finalTime = frames[frames.length - 1].time + 1;
             const total     = frames.length;
 
@@ -893,7 +893,7 @@ const Scheduler = (() => {
      *
      * Pre-creates all Gantt bar elements before the animation starts, each
      * beginning at width:0. During the animation, `renderGantt()` gradually
-     * widens each bar as time progresses — this creates the "growing bar" effect.
+     * widens each bar as time progresses - this creates the "growing bar" effect.
      *
      * Each bar element is given:
      *   - An `id` of "gb-{start}-{end}" so `renderGantt()` can find it quickly.
@@ -912,7 +912,7 @@ const Scheduler = (() => {
 
         ganttBlocks.forEach(b => {
             const index = processes.findIndex(p => p.name === b.name);
-            // index will be -1 for idle blocks — color will be null, no styles applied.
+            // index will be -1 for idle blocks - color will be null, no styles applied.
             const color = index >= 0 ? getColorPalette(index) : null;
             const maxPercentage = ((b.end - b.start) / total * 100).toFixed(2) + '%';
 
@@ -957,10 +957,10 @@ const Scheduler = (() => {
             if (!bar) return;
 
             if (b.end <= time) {
-                // Block is fully in the past — show at its complete width.
+                // Block is fully in the past - show at its complete width.
                 bar.style.width = ((b.end - b.start) / total * 100).toFixed(2) + '%';
             } else if (b.start < time) {
-                // Block is currently active — show only the elapsed portion.
+                // Block is currently active - show only the elapsed portion.
                 bar.style.width = ((time - b.start) / total * 100).toFixed(2) + '%';
             }
             // b.start >= time: block hasn't started yet, leave at width:0.
@@ -978,7 +978,7 @@ const Scheduler = (() => {
      * the same start time (which can't happen in practice but guards against it).
      *
      * The final tick (at `total`) is appended separately because no Gantt block
-     * starts at that time — it's the end time of the last block, representing
+     * starts at that time - it's the end time of the last block, representing
      * when the simulation fully completes.
      *
      * @param {number} currentTime - The current clock value being displayed.
@@ -1038,7 +1038,7 @@ const Scheduler = (() => {
      * Elements whose process name can't be found in `processes` are skipped
      * (shouldn't happen in normal use, but guards against stale DOM).
      *
-     * Does not re-render the table — that's handled by ProcessEditor.repaintColors().
+     * Does not re-render the table - that's handled by ProcessEditor.repaintColors().
      */
     function repaintColors() {
         // Gantt bars.
@@ -1200,17 +1200,17 @@ const Scheduler = (() => {
     /**
      * Methods exposed to the rest of the application:
      *
-     *   init(processEditor)      — Wire up ProcessEditor; call once on page load.
-     *   run()                    — Validate, build frames, and start animation.
-     *   togglePause()            — Pause or resume the running simulation.
-     *   stepForward()            — Advance one tick while paused.
-     *   reset()                  — Clear all simulation state and UI.
-     *   setSpeed(value)          — Update animation speed from the range slider.
-     *   onAlgorithmChange()      — Handle algorithm dropdown change.
-     *   validateQuantum()        — Validate the quantum input; return error or null.
-     *   resetQuantumField()      — Restore quantum input to last valid value.
-     *   clearError               — Alias for hideError(); used by ProcessEditor.
-     *   repaintColors()          — Re-apply palette after OS theme change.
+     *   init(processEditor) - Wire up ProcessEditor; call once on page load.
+     *   run()               - Validate, build frames, and start animation.
+     *   togglePause()       - Pause or resume the running simulation.
+     *   stepForward()       - Advance one tick while paused.
+     *   reset()             - Clear all simulation state and UI.
+     *   setSpeed(value)     - Update animation speed from the range slider.
+     *   onAlgorithmChange() - Handle algorithm dropdown change.
+     *   validateQuantum()   - Validate the quantum input; return error or null.
+     *   resetQuantumField() - Restore quantum input to last valid value.
+     *   clearError          - Alias for hideError(); used by ProcessEditor.
+     *   repaintColors()     - Re-apply palette after OS theme change.
      */
     return { init, run, togglePause, stepForward, reset, setSpeed, onAlgorithmChange, validateQuantum, resetQuantumField, clearError: hideError, repaintColors };
 })();
