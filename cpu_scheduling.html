@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cpu_scheduling.css">
+    <title>CPU Scheduling Visualizer</title>
+</head>
+<body>
+    <div class="page-wrap">
+
+    <!-- Header -->
+    <h1>CPU Scheduling Visualizer <span>Interactive Simulator</span></h1>
+
+    <!-- ── Config Card ────────────────────────────────────────────────────── -->
+    <!-- Algorithm dropdown + Time Quantum input (quantum shown/hidden by JS) -->
+    <div class="card">
+        <div class="card-title">Configuration</div>
+        <div class="config-row">
+        <label class="field-label">
+            Algorithm
+            <!-- option values must match the keys in the `algorithms` registry
+                 in cpu_scheduling_algorithms.js -->
+            <select id="algo-select" onchange="Scheduler.onAlgorithmChange()">
+            <option value="fcfs">First Come First Served</option>
+            <option value="sjf">Shortest Job First</option>
+            <option value="srtf">Shortest Remaining Time First</option>
+            <option value="rr">Round Robin</option>
+            <option value="pnp">Priority (non-preemptive)</option>
+            <option value="pp">Priority (preemptive)</option>
+            <option value="prr">Priority Round Robin</option>
+            </select>
+        </label>
+
+        <!-- Hidden by default; Scheduler.onAlgorithmChange() sets display:flex
+             when a quantum-based algorithm (RR, PRR) is selected -->
+        <div id="quantum-wrap">
+            <label class="field-label">
+            Time Quantum
+            <input id="rr-quantum" type="number" value="2" min="1" max="20">
+            </label>
+        </div>
+        </div>
+    </div>
+
+    <!-- ── Process Editor Card ────────────────────────────────────────────── -->
+    <!-- Table body (#proc-tbody) is fully managed by ProcessEditor.render().
+         The Priority column header (.col-priority) is shown/hidden alongside
+         the Priority <td> cells depending on the selected algorithm. -->
+    <div class="card">
+        <div class="card-title">Processes</div>
+        <!-- Validation error banner; hidden by default, shown by Scheduler.showError() -->
+        <div id="error-toast"></div>
+        <div class="proc-table-wrap">
+        <table class="proc-table" id="proc-table">
+            <thead>
+            <tr>
+                <th style="width:40px">#</th>
+                <th style="min-width:90px">Name</th>
+                <th style="min-width:90px">Arrival</th>
+                <th style="min-width:90px">Burst</th>
+                <th class="col-priority" style="min-width:90px">Priority</th>
+                <th style="width:50px"></th>
+            </tr>
+            </thead>
+            <!-- Rows injected here by ProcessEditor.render() on every structural change -->
+            <tbody id="proc-tbody"></tbody>
+        </table>
+        </div>
+        <button class="btn btn-add" onclick="ProcessEditor.addRow()">+ Add Process</button>
+    </div>
+
+    <!-- ── Controls Card ─────────────────────────────────────────────────── -->
+    <!-- Pause and Step start disabled; Scheduler.setButtonStates() enables them
+         when a simulation is running -->
+    <div class="card">
+        <div class="controls-row">
+        <button class="btn btn-primary" id="btn-run" onclick="Scheduler.run()">▶ Run</button>
+        <button class="btn btn-ghost" id="btn-pause" onclick="Scheduler.togglePause()" disabled>⏸ Pause</button>
+        <button class="btn btn-ghost" id="btn-step"  onclick="Scheduler.stepForward()"        disabled>⏭ Step</button>
+        <button class="btn btn-ghost" onclick="Scheduler.reset()">↺ Reset</button>
+
+        <!-- Updated each tick by Scheduler via setText('time-display', ...) -->
+        <span id="time-display">Time: 0</span>
+
+        <div class="speed-wrap">
+            Speed
+            <!-- Range 1–10; Scheduler.setSpeed() converts to ms delay (600 / value) -->
+            <input id="speed-slider" type="range" min="1" max="10" value="5"
+                oninput="Scheduler.setSpeed(this.value)">
+        </div>
+        </div>
+    </div>
+
+    <!-- ── Simulation Card ───────────────────────────────────────────────── -->
+    <div class="card">
+        <!-- Two-column grid: CPU column (fixed 100px) | Queue column (1fr).
+             Gantt row spans both columns via grid-column: 1 / -1 in CSS. -->
+        <div class="sim-layout">
+
+        <!-- CPU -->
+        <div class="sim-cpu-col">
+            <div class="cpu-label">CPU</div>
+            <!-- Color and text updated each tick by Scheduler.renderCPU();
+                 .idle class applied when no process is running -->
+            <div id="cpu-box" class="idle">Idle</div>
+            <!-- Shows remaining burst time of the running process (e.g. "4 units") -->
+            <div id="cpu-rem" class="cpu-label">—</div>
+        </div>
+
+        <!-- Ready Queue -->
+        <div class="sim-queue-col">
+            <div class="queue-label">Ready Queue</div>
+            <!-- Chip elements injected/removed each tick by Scheduler.renderQueue() -->
+            <div id="queue-area"><span class="queue-empty">Empty</span></div>
+        </div>
+
+        <!-- Gantt -->
+        <div class="gantt-wrap">
+            <div class="gantt-label">Gantt Chart</div>
+            <!-- Bar elements pre-built by buildGanttSkeleton() at width:0,
+                 then widened each tick by Scheduler.renderGantt() -->
+            <div id="gantt"></div>
+            <!-- Tick labels positioned absolutely by Scheduler.renderTicks() -->
+            <div id="gantt-ticks"></div>
+        </div>
+
+        </div>
+    </div>
+
+    <!-- ── Results Card ──────────────────────────────────────────────────── -->
+    <!-- Hidden until simulation finishes; Scheduler.renderStats() builds the
+         content and sets display:flex when complete -->
+    <div class="card" id="stats-area" style="display:none"></div>
+
+    </div><!-- /page-wrap -->
+
+    <!-- Script load order matters:
+         1. algorithms.js  — defines `algorithms`, computeGantt, computeStats (no DOM dependency)
+         2. simulation.js  — defines `Scheduler` (depends on algorithms.js)
+         3. process_editor.js — defines `ProcessEditor`, then calls Scheduler.init()
+                                (depends on both files above being ready) -->
+    <script src="cpu_scheduling_algorithms.js"></script>
+    <script src="cpu_scheduling_simulation.js"></script>
+    <script src="cpu_scheduling_process_editor.js"></script>
+</body>
+</html>

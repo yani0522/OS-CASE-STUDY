@@ -1,0 +1,292 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design tokens ──────────────────────────────────────────────────────
+       All colors, radii, and shadows are defined here as CSS variables so
+       the dark-mode override below only needs to redefine the values that
+       actually change between themes (colors), not structural values like
+       radii or shadows which stay the same in both modes.             */
+    :root {
+      --bg:          #f5f6fa;  /* Page background                          */
+      --surface:     #ffffff;  /* Card background                          */
+      --surface2:    #f0f1f5;  /* Inset elements: inputs, stat cards       */
+      --border:      #dde0e8;  /* Primary borders                          */
+      --border2:     #e8eaf0;  /* Subtle borders (table row dividers)      */
+      --text:        #1a1d27;  /* Primary text                             */
+      --text2:       #6b7280;  /* Secondary / muted text                   */
+      --accent:      #4f6ef7;  /* Interactive blue: buttons, focus rings   */
+      --accent-h:    #3a57e8;  /* Accent hover state                       */
+      --danger:      #ef4444;  /* Validation errors, delete button         */
+      --danger-h:    #dc2626;  /* Danger hover state                       */
+      --success:     #10b981;  /* Reserved for future use                  */
+      --radius:      10px;     /* Card corner radius                       */
+      --radius-sm:   6px;      /* Input / button corner radius             */
+      --shadow:      0 1px 4px rgba(0,0,0,.08);   /* Card default shadow  */
+      --shadow-md:   0 4px 16px rgba(0,0,0,.10);  /* Elevated shadow      */
+    }
+
+    /* Dark mode: only color tokens are overridden; structural tokens
+       (radius, shadow) are inherited unchanged from :root above.    */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:       #0f1117;
+        --surface:  #1a1d27;
+        --surface2: #242736;
+        --border:   #2e3248;
+        --border2:  #262a3a;
+        --text:     #e8eaf0;
+        --text2:    #8b93ac;
+      }
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+    }
+
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    .page-wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+    h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+    h1 span { color: var(--text2); font-weight: 400; font-size: 14px; margin-left: 8px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: var(--text2);
+      margin-bottom: 14px;
+    }
+
+    /* ── Config row (algo + quantum) ────────────────────────────────────── */
+    .config-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+    label.field-label { font-size: 13px; color: var(--text2); display: flex; align-items: center; gap: 8px; }
+
+    select, input[type="number"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 13px;
+      padding: 6px 10px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    select:focus, input[type="number"]:focus { border-color: var(--accent); }
+    /* appearance:none removes the browser's native dropdown arrow so the
+       inline SVG background-image can serve as a consistent custom arrow. */
+    select { padding-right: 28px; appearance: none;
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7280'/%3E%3C/svg%3E");
+             background-repeat: no-repeat; background-position: right 10px center; }
+
+    /* Hidden by default; toggled to display:flex by Scheduler.onAlgorithmChange()
+       when a quantum-based algorithm is selected (RR or Priority RR). */
+    #quantum-wrap { display: none; align-items: center; gap: 8px; }
+    #rr-quantum   { width: 60px; }
+
+    /* ── Process table ──────────────────────────────────────────────────── */
+    /* overflow-x:auto lets the table scroll horizontally on narrow screens
+       instead of breaking the page layout. */
+    .proc-table-wrap { overflow-x: auto; }
+
+    table.proc-table {
+      width: 100%; border-collapse: collapse;
+      font-size: 13px;
+    }
+    .proc-table th {
+      text-align: left;
+      color: var(--text2);
+      font-weight: 500;
+      font-size: 12px;
+      padding: 0 10px 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .proc-table td { padding: 7px 10px; border-bottom: 1px solid var(--border2); vertical-align: middle; }
+    .proc-table tr:last-child td { border-bottom: none; }
+
+    /* Inputs inside table cells use a transparent border by default so they
+       blend in visually; the border becomes visible on focus or validation error. */
+    .proc-table input[type="text"],
+    .proc-table input[type="number"] {
+      width: 100%; background: var(--surface2); border: 1px solid transparent;
+      border-radius: var(--radius-sm); padding: 5px 8px; font-size: 13px; color: var(--text);
+      transition: border-color .15s;
+    }
+    .proc-table input[type="text"]:focus,
+    .proc-table input[type="number"]:focus { border-color: var(--accent); outline: none; }
+
+    /* Color dot shown in the first column of each process row.
+       Background and border colors are set inline by ProcessEditor.render()
+       using the process's palette entry. */
+    .proc-color-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      display: inline-block; margin-right: 6px; vertical-align: middle;
+      border: 1.5px solid;
+    }
+
+    td.col-name-cell { display: flex; align-items: center; min-width: 80px; }
+
+    /* ── Buttons ────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: var(--radius-sm);
+      font-size: 13px; font-weight: 500; cursor: pointer;
+      border: 1px solid transparent; transition: background .15s, opacity .15s;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .btn-primary   { background: var(--accent);  color: #fff; border-color: var(--accent); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-h); border-color: var(--accent-h); }
+
+    .btn-ghost {
+      background: transparent; color: var(--text2);
+      border-color: var(--border);
+    }
+    .btn-ghost:hover:not(:disabled) { background: var(--surface2); color: var(--text); }
+
+    /* btn-danger is the ✕ remove button in each process row. Transparent
+       background by default so it doesn't draw attention at rest. */
+    .btn-danger { background: transparent; color: var(--danger); border-color: transparent; padding: 4px 8px; }
+    .btn-danger:hover:not(:disabled) { background: #fee2e2; }
+    @media (prefers-color-scheme:dark){.btn-danger:hover:not(:disabled){background:#3f1111;}}
+
+    /* btn-add is the full-width dashed "+ Add Process" button below the table. */
+    .btn-add {
+      background: transparent; color: var(--accent); border: 1px dashed var(--accent);
+      width: 100%; margin-top: 10px; justify-content: center;
+    }
+    .btn-add:hover { background: var(--surface2); }
+
+    /* ── Controls row ───────────────────────────────────────────────────── */
+    .controls-row {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+    }
+    /* margin-left:auto pushes the speed control to the far right of the row. */
+    .speed-wrap { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; color: var(--text2); }
+    input[type="range"] { accent-color: var(--accent); width: 90px; }
+
+    #time-display { font-size: 13px; font-weight: 500; color: var(--text2); min-width: 64px; }
+
+    /* ── Simulation card ────────────────────────────────────────────────── */
+    /* Two-column grid: CPU box occupies the fixed 100px left column;
+       the ready queue occupies the flexible right column.
+       The Gantt row (third row) spans both columns via grid-column: 1 / -1. */
+    .sim-layout {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 14px;
+    }
+
+    .sim-cpu-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+
+    #cpu-box {
+      width: 80px; height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: var(--radius); border: 1.5px solid var(--border);
+      font-size: 14px; font-weight: 600;
+      transition: background .2s, border-color .2s, color .2s;
+      background: var(--surface2);
+    }
+    /* !important here overrides the inline styles that Scheduler.renderCPU()
+       sets when a process is running. Without it, removing the .idle class
+       would not be enough to clear the process color — the inline styles would
+       still win in specificity. */
+    #cpu-box.idle { background: var(--surface2) !important; border-color: var(--border) !important; color: var(--text2) !important; }
+
+    .cpu-label { font-size: 11px; color: var(--text2); text-align: center; }
+    #cpu-rem   { font-size: 12px; color: var(--text2); }
+
+    .sim-queue-col { display: flex; flex-direction: column; gap: 6px; }
+    .queue-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+
+    #queue-area {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      min-height: 44px;
+    }
+    .queue-empty { font-size: 12px; color: var(--text2); font-style: italic; }
+
+    /* q-chip is a process card in the ready queue.
+       bg, border, and text colors are set inline by Scheduler.renderQueue()
+       using the process's palette entry. The transition on transform and opacity
+       powers the slide-in entry animation. */
+    .q-chip {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-width: 52px; padding: 4px 8px;
+      border-radius: 8px; border: 0.5px solid;
+      font-size: 12px; font-weight: 500;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      gap: 2px;
+    }
+    /* Entry animation start state: chip begins offset to the right and invisible.
+       JS removes this class on the next two animation frames (double rAF) so the
+       transition from this state plays visually as a slide-in from the right. */
+    .q-chip.entering { transform: translateX(40px); opacity: 0; }
+    .chip-name     { font-size: 12px; font-weight: 500; }
+    .chip-rem      { font-size: 10px; opacity: .7; }
+    .chip-priority { font-size: 10px; opacity: .8; }
+
+    /* ── Gantt ──────────────────────────────────────────────────────────── */
+    /* grid-column: 1 / -1 makes the Gantt row span across both grid columns
+       (CPU + Queue) so the chart runs the full width of the simulation card. */
+    .gantt-wrap { grid-column: 1 / -1; }
+    .gantt-label { font-size: 11px; color: var(--text2); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+
+    #gantt {
+      display: flex; overflow: hidden;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      min-height: 52px;
+    }
+    /* Each .g-block is one process segment in the Gantt chart. width starts at 0
+       and grows via JS; transition: width creates the animated fill effect.
+       border-right uses var(--bg) as a thin separator between adjacent blocks. */
+    .g-block {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 52px; font-size: 12px; font-weight: 500;
+      border-right: 2px solid var(--bg);
+      overflow: hidden; white-space: nowrap;
+      transition: width 0.15s linear;
+    }
+    .g-block.idle { opacity: .4; }
+
+    /* Tick labels are absolutely positioned relative to #gantt-ticks.
+       transform: translateX(-50%) centers each label over its tick position. */
+    #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; color: var(--text2); }
+    .tick        { position: absolute; transform: translateX(-50%); }
+
+    /* ── Stats ──────────────────────────────────────────────────────────── */
+    .stat-algo-label  { font-size: 13px; font-weight: 500; color: var(--text2); }
+    .stat-summary-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .stat-card { background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 16px; }
+    .stat-label { font-size: 12px; color: var(--text2); }
+    .stat-value { font-size: 20px; font-weight: 600; margin-top: 2px; }
+
+    .stat-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .stat-table th { text-align: left; color: var(--text2); font-weight: 400; padding: 4px 10px 8px; }
+    .stat-table td { padding: 7px 10px; border-top: 1px solid var(--border2); }
+    /* proc-badge is the colored process name pill in the stats table.
+       bg, border, and text are set inline by Scheduler.renderStats(). */
+    .proc-badge { display: inline-block; padding: 2px 8px; border-radius: 5px; border: 0.5px solid; font-size: 12px; font-weight: 500; }
+
+    /* ── Error toast ────────────────────────────────────────────────────── */
+    #error-toast {
+      display: none; background: #fef2f2; border: 1px solid #fca5a5;
+      color: #b91c1c; border-radius: var(--radius-sm);
+      padding: 8px 14px; font-size: 13px; margin-top: 6px; margin-bottom: 12px;
+    }
+    @media (prefers-color-scheme:dark){#error-toast{background:#3f1111;border-color:#7f1d1d;color:#fca5a5;}}
