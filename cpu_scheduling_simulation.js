@@ -1189,7 +1189,11 @@ const Scheduler = (() => {
             tbody.appendChild(trow);
         });
 
-        area.appendChild(table);
+        // Wrap table in a scroll container for narrow viewports (mobile).
+        const tableWrap = document.createElement('div');
+        tableWrap.className = 'stat-table-wrap';
+        tableWrap.appendChild(table);
+        area.appendChild(tableWrap);
     }
 
 

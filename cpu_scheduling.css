@@ -296,3 +296,143 @@
       padding: 8px 14px; font-size: 13px; margin-top: 6px; margin-bottom: 12px;
     }
     @media (prefers-color-scheme:dark){#error-toast{background:#3f1111;border-color:#7f1d1d;color:#fca5a5;}}
+
+
+    /* ============================================================
+       Responsive - mobile breakpoints
+       All breakpoints use max-width so the base styles above apply
+       to wide viewports and these rules progressively simplify the
+       layout as the screen gets narrower.
+       ============================================================ */
+
+    /* ----------------------------------------------------------
+       ≤ 600px - small phones (e.g. iPhone SE, Galaxy A series)
+       ---------------------------------------------------------- */
+    @media (max-width: 600px) {
+
+      /* Tighten page breathing room so cards don't feel cramped */
+      body { padding: 16px 12px 40px; }
+
+      /* Reduce card internal padding so content has more room */
+      .card { padding: 14px 14px; }
+
+      /* Stack the h1 subtitle onto its own line */
+      h1 { font-size: 18px; }
+      h1 span { display: block; margin-left: 0; margin-top: 3px; font-size: 13px; }
+
+      /* Config row: stack algorithm label + select vertically */
+      .config-row { flex-direction: column; align-items: stretch; gap: 10px; }
+
+      /* Each field label becomes a column so label sits above the control */
+      label.field-label { flex-direction: column; align-items: flex-start; gap: 4px; }
+
+      /* Select fills the full card width */
+      select { width: 100%; }
+
+      /* Quantum wrapper becomes full-width too */
+      #quantum-wrap { width: 100%; }
+      #quantum-wrap label.field-label { width: 100%; }
+      #rr-quantum { width: 80px; }
+
+      /* Controls row: wrap tightly, remove auto-margin trick that breaks layout */
+      .controls-row { gap: 8px; }
+
+      /* Speed wrap: no longer pushed to the far right - sits inline naturally */
+      .speed-wrap { margin-left: 0; }
+
+      /* Time display: shrink slightly */
+      #time-display { font-size: 12px; min-width: 54px; }
+
+      /* Simulation layout: stack CPU + Queue vertically on narrow screens */
+      .sim-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
+
+      /* CPU column: switch to a horizontal row (box + labels side by side) */
+      .sim-cpu-col {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        justify-content: flex-start;
+      }
+
+      /* CPU box: shrink slightly but keep recognisable */
+      #cpu-box { width: 64px; height: 52px; font-size: 13px; }
+
+      /* CPU labels: stack naturally on the right of the box */
+      .cpu-label { text-align: left; }
+
+      /* Gantt: full width (it already spans all columns, just ensure no overflow) */
+      .gantt-wrap { overflow-x: auto; }
+      #gantt      { min-width: 220px; }
+
+      /* Stats summary cards: each takes at least half the row */
+      .stat-summary-row { gap: 8px; }
+      .stat-card  { flex: 1 1 calc(50% - 4px); min-width: 120px; padding: 8px 12px; }
+      .stat-value { font-size: 18px; }
+
+      /* Stats table: allow horizontal scroll rather than crushing columns */
+      .stat-table-wrap { overflow-x: auto; }
+      .stat-table { font-size: 12px; min-width: 340px; }
+      .stat-table th,
+      .stat-table td  { padding: 6px 8px; }
+
+      /* Process table: tighten column padding */
+      .proc-table th,
+      .proc-table td  { padding: 6px 7px; }
+
+      /* Process table inputs: allow them to shrink a bit more */
+      .proc-table input[type="text"],
+      .proc-table input[type="number"] { font-size: 12px; padding: 4px 6px; }
+    }
+
+
+    /* ----------------------------------------------------------
+       ≤ 400px - very small phones (320–400 px, e.g. iPhone 5/SE 1st gen)
+       ---------------------------------------------------------- */
+    @media (max-width: 400px) {
+
+      /* Minimal page gutters so every pixel of width is available */
+      body { padding: 12px 8px 32px; }
+
+      .card { padding: 12px 10px; }
+
+      /* Slightly smaller page title */
+      h1 { font-size: 16px; }
+      h1 span { font-size: 12px; }
+
+      /* Squeeze button text tighter so they fit on one line */
+      .btn { padding: 6px 10px; font-size: 12px; gap: 4px; }
+
+      /* Speed slider: narrower so the controls row fits at 320px */
+      input[type="range"] { width: 70px; }
+
+      /* At 320px the 5-item controls row can still overflow.
+         Break it into two logical rows using a named flex trick:
+         [Run] [Pause] [Step] [Reset]  on the first visual line
+         [Time: X]              [Speed ——]  on the second          */
+      .controls-row { flex-wrap: wrap; row-gap: 8px; }
+      #time-display { order: 10; flex-basis: 100%; }  /* pushes to own row */
+      .speed-wrap   { order: 11; margin-left: auto; } /* right-align on its row */
+
+      /* Gantt chart: make taller so labels don't collide */
+      #gantt, .g-block { min-height: 44px; }
+      .g-block { font-size: 11px; }
+
+      /* Queue chips: compact */
+      .q-chip      { min-width: 42px; padding: 3px 6px; }
+      .chip-name   { font-size: 11px; }
+      .chip-rem    { font-size: 9px; }
+      .chip-priority { font-size: 9px; }
+
+      /* Process table: reduce the row-number column */
+      .proc-table th:first-child,
+      .proc-table td:first-child { width: 28px; padding-left: 4px; padding-right: 4px; }
+
+      /* Remove button: tighter */
+      .btn-danger { padding: 3px 6px; }
+
+      /* Stats: single-column summary cards at very tight widths */
+      .stat-card { flex: 1 1 100%; }
+    }
