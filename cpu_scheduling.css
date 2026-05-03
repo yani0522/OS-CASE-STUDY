@@ -273,6 +273,8 @@
        transform: translateX(-50%) centers each label over its tick position. */
     #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; color: var(--text2); }
     .tick        { position: absolute; transform: translateX(-50%); }
+    .tick:first-child { transform: none; }              /* flush left at 0 */
+    .tick:last-child  { transform: translateX(-100%); } /* flush right at end */
 
     /* ------------------------------ Stats ------------------------------ */
     .stat-algo-label  { font-size: 13px; font-weight: 500; color: var(--text2); }
@@ -365,7 +367,11 @@
 
       /* Gantt: full width (it already spans all columns, just ensure no overflow) */
       .gantt-wrap { overflow-x: auto; }
-      #gantt      { min-width: 220px; }
+
+      /* Minimum width ensures bars never collapse to unreadable slivers on narrow
+         screens. #gantt-ticks shares this same value so tick labels stay aligned. */
+      #gantt { min-width: 480px; }
+      #gantt-ticks { min-width: 480px; }
 
       /* Stats summary cards: each takes at least half the row */
       .stat-summary-row { gap: 8px; }
@@ -414,16 +420,16 @@
          [Time: X]              [Speed ——]  on the second          */
       .controls-row { flex-wrap: wrap; row-gap: 8px; }
       #time-display { order: 10; flex-basis: 100%; }  /* pushes to own row */
-      .speed-wrap   { order: 11; margin-left: auto; } /* right-align on its row */
+      .speed-wrap { order: 11; margin-left: auto; } /* right-align on its row */
 
       /* Gantt chart: make taller so labels don't collide */
       #gantt, .g-block { min-height: 44px; }
       .g-block { font-size: 11px; }
 
       /* Queue chips: compact */
-      .q-chip      { min-width: 42px; padding: 3px 6px; }
-      .chip-name   { font-size: 11px; }
-      .chip-rem    { font-size: 9px; }
+      .q-chip { min-width: 42px; padding: 3px 6px; }
+      .chip-name { font-size: 11px; }
+      .chip-rem { font-size: 9px; }
       .chip-priority { font-size: 9px; }
 
       /* Process table: reduce the row-number column */

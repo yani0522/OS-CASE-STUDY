@@ -1140,15 +1140,15 @@ const Scheduler = (() => {
         // Algorithm label.
         const algorithmLabel = document.createElement('div');
         algorithmLabel.className = 'stat-algo-label';
-        algorithmLabel.textContent = 'Results — ' + algorithms[key].label;
+        algorithmLabel.textContent = 'Results - ' + algorithms[key].label;
         area.appendChild(algorithmLabel);
 
         // Summary cards (avg TAT and avg WT).
         const summaryRow = document.createElement('div');
         summaryRow.className = 'stat-summary-row';
         [
-            ['Avg turnaround time', averages.averageTurnaroundTime + ' units'],
-            ['Avg waiting time', averages.averageWaitingTime + ' units']
+            ['Average Turnaround Time', averages.averageTurnaroundTime + ' units'],
+            ['Average Waiting Time', averages.averageWaitingTime + ' units']
         ].forEach(([label, value]) => {
             const card = document.createElement('div');
             card.className = 'stat-card';
@@ -1166,7 +1166,7 @@ const Scheduler = (() => {
         const table = document.createElement('table');
         table.className = 'stat-table';
 
-        const headers = ['Process', 'Arrival', 'Burst', ...(showPriority ? ['Priority'] : []), 'Finish', 'TAT', 'WT'];
+        const headers = ['Process', 'Arrival Time', 'Burst Time', ...(showPriority ? ['Priority'] : []), 'Completion Time', 'TAT', 'WT'];
         table.innerHTML = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody></tbody>`;
 
         const tbody = table.querySelector('tbody');
