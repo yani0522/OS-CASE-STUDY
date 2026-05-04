@@ -542,13 +542,13 @@ function prrAlgorithm(processes, options = {}) {
  * Keys match the <option value="..."> in cpu_scheduling.html.
  */
 const algorithms = {
-    fcfs: { label: 'First Come First Served',       run: fcfsAlgorithm, needsPriority: false, needsQuantum: false },
-    sjf:  { label: 'Shortest Job First',            run: sjfAlgorithm,  needsPriority: false, needsQuantum: false },
-    srtf: { label: 'Shortest Remaining Time First', run: srtfAlgorithm, needsPriority: false, needsQuantum: false },
-    rr:   { label: 'Round Robin',                   run: rrAlgorithm,   needsPriority: false, needsQuantum: true  },
-    pnp:  { label: 'Priority (Non-Preemptive)',     run: pnpAlgorithm,  needsPriority: true,  needsQuantum: false },
-    pp:   { label: 'Priority (Preemptive)',         run: ppAlgorithm,   needsPriority: true,  needsQuantum: false },
-    prr:  { label: 'Priority Round Robin',          run: prrAlgorithm,  needsPriority: true,  needsQuantum: true  }
+    fcfs: { label: 'First-Come, First-Served',             run: fcfsAlgorithm, needsPriority: false, needsQuantum: false },
+    sjf:  { label: 'Shortest Job First',                   run: sjfAlgorithm,  needsPriority: false, needsQuantum: false },
+    srtf: { label: 'Shortest Remaining Time First',        run: srtfAlgorithm, needsPriority: false, needsQuantum: false },
+    rr:   { label: 'Round Robin',                          run: rrAlgorithm,   needsPriority: false, needsQuantum: true  },
+    pnp:  { label: 'Priority Scheduling (Non-Preemptive)', run: pnpAlgorithm,  needsPriority: true,  needsQuantum: false },
+    pp:   { label: 'Priority Scheduling (Preemptive)',     run: ppAlgorithm,   needsPriority: true,  needsQuantum: false },
+    prr:  { label: 'Priority Scheduling with Round Robin', run: prrAlgorithm,  needsPriority: true,  needsQuantum: true  }
 };
 
 

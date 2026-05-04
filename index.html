@@ -22,13 +22,13 @@
                     <!-- option values must match the keys in the `algorithms` registry
                          in cpu_scheduling_algorithms.js -->
                     <select id="algo-select" onchange="Scheduler.onAlgorithmChange()">
-                        <option value="fcfs">First Come First Served</option>
+                        <option value="fcfs">First-Come, First-Served</option>
                         <option value="sjf">Shortest Job First</option>
                         <option value="srtf">Shortest Remaining Time First</option>
                         <option value="rr">Round Robin</option>
-                        <option value="pnp">Priority (non-preemptive)</option>
-                        <option value="pp">Priority (preemptive)</option>
-                        <option value="prr">Priority Round Robin</option>
+                        <option value="pnp">Priority Scheduling (non-preemptive)</option>
+                        <option value="pp">Priority Scheduling (preemptive)</option>
+                        <option value="prr">Priority Scheduling with Round Robin</option>
                     </select>
                 </label>
 
