@@ -105,13 +105,21 @@ function fcfsAlgorithm(processes) {
         // Pick the head of the ready list (earliest arrival due to the initial sort).
         const running = ready[0];
 
+        // Snapshot the queue order once at the moment the CPU picks this process.
+        // Non-preemptive: the ordering is frozen here; new arrivals during the burst
+        // join the tail in arrival order rather than being re-sorted mid-burst.
+        const queueSnapshot = jobs
+            .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name);
+        const inSnapshot = new Set(queueSnapshot.map(j => j.name));
+
         // Run for the full burst - FCFS never preempts.
         // `i` counts ticks elapsed, so remaining = original - i.
         for (let i = 0; i < running.remainingBurstTime; i++) {
-            // Live queue snapshot excludes the currently running process.
-            const liveQueue = jobs
-                .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name);
-            pushFrame(frames, time, running.name, running.remainingBurstTime - i, liveQueue);
+            // Append any processes that arrived during this tick to the tail.
+            jobs
+                .filter(j => j.arrivalTime === time && j.remainingBurstTime > 0 && j.name !== running.name && !inSnapshot.has(j.name))
+                .forEach(j => { queueSnapshot.push(j); inSnapshot.add(j.name); });
+            pushFrame(frames, time, running.name, running.remainingBurstTime - i, queueSnapshot);
             time++;
         }
 
@@ -155,13 +163,21 @@ function sjfAlgorithm(processes) {
 
         const running = ready[0]; // Shortest job among all currently arrived.
 
+        // Snapshot the queue order once at the moment the CPU picks this process.
+        // Non-preemptive: the sort order is frozen here; new arrivals during the burst
+        // join the tail in arrival order rather than being inserted by burst time mid-burst.
+        const queueSnapshot = jobs
+            .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name)
+            .sort((a, b) => a.burstTime - b.burstTime || a.arrivalTime - b.arrivalTime);
+        const inSnapshot = new Set(queueSnapshot.map(j => j.name));
+
         // Non-preemptive: run the full burst without interruption.
         for (let i = 0; i < running.remainingBurstTime; i++) {
-            // Queue snapshot keeps the same SJF sort so the UI shows the correct order.
-            const liveQueue = jobs
-                .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name)
-                .sort((a, b) => a.burstTime - b.burstTime || a.arrivalTime - b.arrivalTime);
-            pushFrame(frames, time, running.name, running.remainingBurstTime - i, liveQueue);
+            // Append any processes that arrived during this tick to the tail.
+            jobs
+                .filter(j => j.arrivalTime === time && j.remainingBurstTime > 0 && j.name !== running.name && !inSnapshot.has(j.name))
+                .forEach(j => { queueSnapshot.push(j); inSnapshot.add(j.name); });
+            pushFrame(frames, time, running.name, running.remainingBurstTime - i, queueSnapshot);
             time++;
         }
 
@@ -332,12 +348,24 @@ function pnpAlgorithm(processes) {
 
         const running = ready[0]; // Highest-priority process.
 
-        // Non-preemptive: run the entire burst before reconsidering.
-        for (let i = 0; i < running.remainingBurstTime; i++) {
-            const liveQueue = jobs
+        // Snapshot the queue order once at the moment the CPU picks this process.
+        // Non-preemptive: the sort order is frozen here; new arrivals during the burst
+        // join the tail in arrival order rather than being inserted by priority mid-burst.
+        const queueSnapshot = jobs
             .filter(j => j.arrivalTime <= time && j.remainingBurstTime > 0 && j.name !== running.name)
             .sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
-            pushFrame(frames, time, running.name, running.remainingBurstTime - i, liveQueue);
+        const inSnapshot = new Set(queueSnapshot.map(j => j.name));
+
+        // Non-preemptive: run the entire burst before reconsidering.
+        for (let i = 0; i < running.remainingBurstTime; i++) {
+            // Insert new arrivals in priority order - they can't preempt the CPU but
+            // should appear in the correct priority position among waiting processes.
+            let changed = false;
+            jobs
+                .filter(j => j.arrivalTime === time && j.remainingBurstTime > 0 && j.name !== running.name && !inSnapshot.has(j.name))
+                .forEach(j => { queueSnapshot.push(j); inSnapshot.add(j.name); changed = true; });
+            if (changed) queueSnapshot.sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
+            pushFrame(frames, time, running.name, running.remainingBurstTime - i, queueSnapshot);
             time++;
         }
 
