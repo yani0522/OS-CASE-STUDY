@@ -173,10 +173,13 @@ function sjfAlgorithm(processes) {
 
         // Non-preemptive: run the full burst without interruption.
         for (let i = 0; i < running.remainingBurstTime; i++) {
-            // Append any processes that arrived during this tick to the tail.
+            // Insert new arrivals in smallest burst time order - they can't preempt the CPU but
+            // should appear in the correct position among waiting processes.
+            let changed = false;
             jobs
                 .filter(j => j.arrivalTime === time && j.remainingBurstTime > 0 && j.name !== running.name && !inSnapshot.has(j.name))
-                .forEach(j => { queueSnapshot.push(j); inSnapshot.add(j.name); });
+                .forEach(j => { queueSnapshot.push(j); inSnapshot.add(j.name); changed = true; });
+            if (changed) queueSnapshot.sort((a, b) => a.burstTime - b.burstTime || a.arrivalTime - b.arrivalTime);
             pushFrame(frames, time, running.name, running.remainingBurstTime - i, queueSnapshot);
             time++;
         }
