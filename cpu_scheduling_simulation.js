@@ -1017,6 +1017,17 @@ const Scheduler = (() => {
         const span = document.createElement('span');
         span.className = 'tick';
         span.style.left = (time / total * 100).toFixed(2) + '%';
+
+        // Determine the correct alignment once, at creation time.
+        // This avoids :first-child/:last-child shifting when new ticks are inserted.
+        if (time === 0) {
+            span.style.transform = 'none';                // flush left — never shifts
+        } else if (time === total) {
+            span.style.transform = 'translateX(-100%)';   // flush right — only ever the final tick
+        } else {
+            span.style.transform = 'translateX(-50%)';    // centered — stable from creation
+        }
+
         span.textContent = time;
         container.appendChild(span);
     }

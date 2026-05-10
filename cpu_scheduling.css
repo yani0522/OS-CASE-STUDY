@@ -270,8 +270,6 @@
        transform: translateX(-50%) centers each label over its tick position. */
     #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; }
     .tick        { position: absolute; transform: translateX(-50%); }
-    .tick:first-child { transform: none; }              /* flush left at 0 */
-    .tick:last-child  { transform: translateX(-100%); } /* flush right at end */
 
     /* ------------------------------ Stats ------------------------------ */
     .stat-algo-label  { font-size: 13px; font-weight: 500; color: var(--text2); }
