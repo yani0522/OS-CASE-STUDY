@@ -16,12 +16,9 @@
       --accent:      #4f6ef7;   /* Interactive blue: buttons, focus rings */
       --accent-h:    #3a57e8;   /* Accent hover state                     */
       --danger:      #ef4444;   /* Validation errors, delete button       */
-      --danger-h:    #dc2626;   /* Danger hover state                     */
-      --success:     #10b981;   /* Reserved for future use                */
       --radius:      10px;        /* Card corner radius                     */
       --radius-sm:   6px;         /* Input / button corner radius           */
       --shadow:      0 1px 4px rgba(0,0,0,.08);    /* Card default shadow */
-      --shadow-md:   0 4px 16px rgba(0,0,0,.10);   /* Elevated shadow     */
     }
 
     /* Dark mode: only color tokens are overridden; structural tokens 
@@ -271,7 +268,7 @@
 
     /* Tick labels are absolutely positioned relative to #gantt-ticks.
        transform: translateX(-50%) centers each label over its tick position. */
-    #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; color: var(--text2); }
+    #gantt-ticks { position: relative; height: 20px; margin-top: 2px; font-size: 11px; }
     .tick        { position: absolute; transform: translateX(-50%); }
     .tick:first-child { transform: none; }              /* flush left at 0 */
     .tick:last-child  { transform: translateX(-100%); } /* flush right at end */
