@@ -708,14 +708,10 @@ const Scheduler = (() => {
      * When idle: clears all inline styles so the CSS `.idle` class takes over,
      * which renders the box as a neutral gray.
      *
-     * `cpu-proc` and `cpu-rem` are optional elements (checked with `if`). They
-     * exist in the DOM but could be absent in stripped-down test environments.
-     *
      * @param {Object} frame - One frame object from the frames array.
      */
     function renderCPU(frame) {
         const box = getElement('cpu-box');
-        const processSpan = getElement('cpu-proc');
         const remainingBurstSpan = getElement('cpu-rem');
 
         if (frame.process === 'idle') {
@@ -725,7 +721,6 @@ const Scheduler = (() => {
             box.style.color = '';
             box.classList.add('idle');
             box.textContent = 'Idle';
-            if (processSpan) processSpan.textContent = '—';
             if (remainingBurstSpan) remainingBurstSpan.textContent = '—';
         } else {
             const index = processes.findIndex(p => p.name === frame.process);
@@ -736,7 +731,6 @@ const Scheduler = (() => {
             box.style.color = color.text;
             box.classList.remove('idle');
             box.textContent = frame.process;
-            if (processSpan) processSpan.textContent = frame.process;
             if (remainingBurstSpan) remainingBurstSpan.textContent = frame.remainingBurstTime + ' units';
         }
     }
@@ -755,7 +749,6 @@ const Scheduler = (() => {
         box.style.color = '';
         box.classList.add('idle');
         box.textContent = 'Idle';
-        setText('cpu-proc', '—');
         setText('cpu-rem', '—');
     }
 
