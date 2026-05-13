@@ -1,0 +1,11 @@
+Instructions:
+
+    1. Select the cpu scheduling algorithm to simulate on the dropdown box.
+    2. Input the Process ID, Arrival Time, Burst Time, Priority (if applicable to algorithm), and Time Quantum 
+       (if applicable to algorithm) in the input fields.
+    3. Click the ▶ Run button to run the simulation, the ⏸ Pause button to pause the simulation or ▶ Resume button
+       to resume the simulation, and the ⏭ Step button to see the step by step simulation.
+
+Website link: https://yani0522.github.io/OS-CASE-STUDY/
+
+Developed by Manuel, Ian Charles R. BSCS - 3A
