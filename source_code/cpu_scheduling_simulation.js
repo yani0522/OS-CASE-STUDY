@@ -522,6 +522,13 @@ const Scheduler = (() => {
         hideElement('stats-area'); // Clear previous results.
 
         scheduleNextFrame();
+
+        // Scroll the simulation panel into view so users see the action start immediately.
+        const elementScroll = getElement('simulation-area');
+        elementScroll.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
     }
 
     /**
@@ -1109,6 +1116,13 @@ const Scheduler = (() => {
         getElement('btn-run').disabled = false;
         setButtonStates(false);
         renderStats(); // Build and show the stats panel below the simulation card.
+
+        // Scroll the results panel into view so users see the outcome immediately.
+        const elementScroll = getElement('stats-area');
+        elementScroll.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
     }
 
     /**

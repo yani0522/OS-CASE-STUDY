@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="cpu_scheduling.css">
+    <link rel="stylesheet" href="source_code/cpu_scheduling.css">
     <title>CPU Scheduling Visualizer</title>
 </head>
 <body>
@@ -20,7 +20,7 @@
                 <label class="field-label">
                     Algorithm
                     <!-- option values must match the keys in the `algorithms` registry
-                         in cpu_scheduling_algorithms.js -->
+                         in source_code/cpu_scheduling_algorithms.js -->
                     <select id="algo-select" onchange="Scheduler.onAlgorithmChange()">
                         <option value="fcfs">First Come First Served</option>
                         <option value="sjf">Shortest Job First</option>
@@ -93,7 +93,7 @@
         </div>
 
         <!-- Simulation Card -->
-        <div class="card">
+        <div class="card" id="simulation-area">
             <!-- Two-column grid: CPU column (fixed 100px) | Queue column (1fr).
                 Gantt row spans both columns via grid-column: 1 / -1 in CSS. -->
             <div class="sim-layout">
@@ -138,8 +138,8 @@
          2. simulation.js  - defines `Scheduler` (depends on algorithms.js)
          3. process_editor.js - defines `ProcessEditor`, then calls Scheduler.init()
                                 (depends on both files above being ready) -->
-    <script src="cpu_scheduling_algorithms.js"></script>
-    <script src="cpu_scheduling_simulation.js"></script>
-    <script src="cpu_scheduling_process_editor.js"></script>
+    <script src="source_code/cpu_scheduling_algorithms.js"></script>
+    <script src="source_code/cpu_scheduling_simulation.js"></script>
+    <script src="source_code/cpu_scheduling_process_editor.js"></script>
 </body>
 </html>
