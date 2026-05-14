@@ -594,6 +594,13 @@ const Scheduler = (() => {
         hideElement('stats-area');
         resetCPU();
         resetQueue();
+
+        // Scroll back to the top of the config panel so users can immediately start a new simulation after resetting.
+        const elementScroll = getElement('config-area');
+        elementScroll.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
     }
 
     /**
